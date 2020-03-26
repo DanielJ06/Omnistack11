@@ -1,6 +1,8 @@
 const connection = require('../database/connection');
 const crypto = require('crypto');
 
+const Mail = require('../lib/Mail')
+
 module.exports = {
     async index (req, res) {
         const ongs = await connection('ongs').select('*');
@@ -20,6 +22,12 @@ module.exports = {
            whatsapp,
            city,
            uf
+       })
+
+       await Mail.sendMail({
+            to: `${name} <${email}>`,
+            subject: 'Sua ONG foi cadastrada',
+            text: `Sua ONG foi cadastrada, seu email de login é: ${ id }`
        })
        
        return res.json({ id });
